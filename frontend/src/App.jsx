@@ -83,6 +83,11 @@ const App = () => {
           <EmailVerification/>
         </RedirectedRoute>
       } />
+      <Route
+        path="/"
+        element={
+          isAuthenticated ? <Navigate to="/dashboard" replace />: <Navigate to="/login" replace /> }
+          />
       <Route path = "*" element = {
         <div>404 page not found</div>
       } />
