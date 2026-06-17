@@ -1,7 +1,7 @@
 import {create} from "zustand"
 import axios from "axios"
 import { isLatLong } from "validator";
-const API_URL = "api/auth"
+const API_URL = "/api/auth"
 axios.defaults.withCredentials = true;
 export const useAuthStore = create((set,get) => ({
     user: null,
