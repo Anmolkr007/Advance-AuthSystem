@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router";
 import axios from "axios";
-import EmailVerified from "./Emailverified.jsx";
+import EmailVerified from "./EmailVerified.jsx";
 import Verifying from "./Verifying.jsx";
 import VerificationFailed from "./VerificationFailed.jsx";
 
