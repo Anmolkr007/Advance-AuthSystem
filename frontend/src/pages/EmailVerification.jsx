@@ -1,32 +1,33 @@
 import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router";
+import { useSearchParams, Link } from "react-router";
 import axios from "axios";
-import EmailVerified from "./EmailVerified.jsx";
-import Verifying from "./Verifying.jsx";
-import VerificationFailed from "./VerificationFailed.jsx";
+import { useAuthStore } from "../store/authStore";
+import EmailVerified from "./EmailVerified";
+import VerificationFailed from "./VerificationFailed";
+import Verifying from "./Verifying";
 
-const API_URL = "api/auth"
-const EmailVerification = () => {
-    const [searchParams] = useSearchParams();
-    const token = searchParams.get("token");
+const VerifyEmailPage = () => {
+  const [searchParams] = useSearchParams();
   const [status, setStatus] = useState("loading");
+  const token = searchParams.get("token");
+  const {verifyEmail,error} = useAuthStore();
 
   useEffect(() => {
-    const verifyEmail = async () => {
+    const verify = async () => {
       try {
-        const response = await axios.get(`${API_URL}/verifyEmail?verificationToken=${token}`);
+        await verifyEmail(token);
         setStatus("success");
-    } catch (err) {
-          console.log("Email verification response:", err.response.data);
-        setStatus(err.response.data.message);
+      } catch (error) {
+        setStatus("error");
       }
     };
-    if (token) verifyEmail();
+    if (token) verify();
   }, [token]);
 
   if (status === "loading") return <Verifying/>;
-  if (status === "success") return <EmailVerified/>;
-  return <VerificationFailed error={status} />;
+  if (status === "success")
+    return <EmailVerified/>
+  return <VerificationFailed/>;
 };
 
-export default EmailVerification;
+export default VerifyEmailPage;

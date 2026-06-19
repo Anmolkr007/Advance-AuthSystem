@@ -6,8 +6,8 @@ import validator from "validator";
 import transporter from "../config/nodemailer.js"
 
 export const verifyEmail = async(req, res) => {
-    const {verificationToken} = req.query;
-    console.log("Verification token received:", verificationToken);
+    const {verificationToken} = req.body;
+    // console.log("Verification token received:", verificationToken);
     if(!verificationToken){
         return res.status(400).json({success:false,message:"Verification token is required"});
     }
@@ -15,15 +15,14 @@ export const verifyEmail = async(req, res) => {
         const hashedVerificationToken = crypto.createHash("sha256").update(verificationToken).digest("hex");
         console.log("Hashed verification token :", hashedVerificationToken);
         const user = await sql ` select * from users where verificationToken = ${hashedVerificationToken} and verificationTokenExpiresAt > now()`;
-        console.log("User:", user);
         if(user.length === 0){
             return res.status(400).json({success:false,message:"Invalid or expired verification token"});
         }
         await sql`
             update users
-            set isverified = true,
-            verificationtoken = null,
-            verificationtokenexpiresat = null
+            set isVerified = true,
+            verificationToken = null,
+            verificationTokenExpiresAt = null
             where id = ${user[0].id}
         `;
         console.log("Email verified for user with email:", user[0].email);
@@ -141,7 +140,7 @@ export const signup = async(req, res) => {
         // Check if user with the same email already exists
         const existingUser = await sql `select * from users where email = ${email}`;
         if(existingUser.length > 0){
-            if(existingUser[0].isVerified){
+            if(existingUser[0].isverified){
                 return res.status(400).json({success:false,message:"User with this email already exists,Please try logging in."});
             }
             else{
@@ -248,13 +247,13 @@ export const signup = async(req, res) => {
 </html>
 `
         }
-        await transporter.sendMail(maileOptions);;  
-
+        
         // Insert new user into database
         await sql`
-            insert into users (email, password, name, verificationToken,verificationTokenExpiresAt)
-            values (${email}, ${hashedPassword}, ${name}, ${hashedVerificationToken}, ${verificationTokenExpiresAt} )
+        insert into users (email, password, name, verificationToken,verificationTokenExpiresAt)
+        values (${email}, ${hashedPassword}, ${name}, ${hashedVerificationToken}, ${verificationTokenExpiresAt} )
         `;
+        await transporter.sendMail(maileOptions);
 
         return res.status(201).json({success:true,message:"User registered successfully.Verification email sent. Please verify your email."});
 
@@ -313,8 +312,8 @@ export const forgotPassword = async(req, res) => {
         const resetPasswordExpiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hour from now
         await sql`
             update users
-            set resetPasswordToken = ${hasedResetPasswordToken},
-            resetPasswordExpiresAt = ${resetPasswordExpiresAt}
+            set resetpasswordtoken = ${hasedResetPasswordToken},
+            resetpasswordexpiresat = ${resetPasswordExpiresAt}
             where id = ${user[0].id}
         `;
         const maileOptions = {

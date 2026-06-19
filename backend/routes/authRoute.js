@@ -8,7 +8,7 @@ router.post("/login",login);
 router.post("/signup",signup);
 router.post("/logout",authMiddleware,logout);
 router.post("/refreshToken",refreshToken);
-router.get("/verifyEmail",verifyEmail);
+router.post("/verifyEmail",verifyEmail);
 router.post("/forgotPassword",forgotPassword);
 router.post("/resetPassword",resetPassword);
 export default router;
