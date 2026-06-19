@@ -21,9 +21,9 @@ export const verifyEmail = async(req, res) => {
         }
         await sql`
             update users
-            set isVerified = True,
-            verificationToken = null,
-            verificationTokenExpiresAt = null
+            set isverified = true,
+            verificationtoken = null,
+            verificationtokenexpiresat = null
             where id = ${user[0].id}
         `;
         console.log("Email verified for user with email:", user[0].email);
