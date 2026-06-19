@@ -61,7 +61,7 @@ export const login = async(req, res) => {
         return res.status(400).json({success:false,message:"Invalid email or password"});
     }
     //check if email is verified
-    if(user[0].isVerified === false){
+    if(user[0].isverified === false){
         return res.status(400).json({success:false,message:"Email not verified. Please verify your email before logging in."});
     }
     //if you are here, it means email and password are correct and email is verified, generating tokens and sending to client
