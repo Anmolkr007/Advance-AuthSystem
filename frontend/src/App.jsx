@@ -79,9 +79,9 @@ const App = () => {
         </RedirectedRoute>
       } />
       <Route path = "/email-verification" element = {
-       
+        <RedirectedRoute>
           <EmailVerification/>
-        
+        </RedirectedRoute>
       } />
       <Route
         path="/"
